@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { v4 } from "uuid";
 
-export interface FileData {
+export interface FileProcessResult {
   href: string;
   download: string;
 }
@@ -9,7 +9,7 @@ export interface FileData {
 export interface ProcessData {
   id: string;
   file: File;
-  data?: FileData;
+  result?: FileProcessResult;
   loading: boolean;
   error?: string;
 }
@@ -17,7 +17,7 @@ export interface ProcessData {
 async function processFile(
   file: File,
   vipsInstance: typeof vips
-): Promise<FileData> {
+): Promise<FileProcessResult> {
   const originalImageBuffer = await file.arrayBuffer();
   const image: vips.Image =
     vipsInstance.Image.newFromBuffer(originalImageBuffer);
@@ -46,6 +46,35 @@ export const useProcessFiles = (vipsInstance?: typeof vips) => {
   const [processes, setProcesses] = useState<Record<string, ProcessData>>({});
   const [processing, setProcessing] = useState(false);
 
+  const setIsLoading = useCallback(
+    ({ id, file }: { id: string; file: File }) =>
+      setProcesses((p) => ({
+        ...p,
+        [id]: { id, file, loading: true },
+      })),
+    []
+  );
+
+  const setSuccess = useCallback(
+    ({ id, result, file }: Pick<ProcessData, "id" | "result" | "file">) => {
+      setProcesses((p) => ({
+        ...p,
+        [id]: { id, loading: false, result, file },
+      }));
+    },
+    []
+  );
+
+  const setError = useCallback(
+    ({ id, error, file }: Pick<ProcessData, "id" | "file" | "error">) => {
+      setProcesses((p) => ({
+        ...p,
+        [id]: { id, file, loading: false, error: error },
+      }));
+    },
+    []
+  );
+
   const handleFiles = useCallback(
     (files: File[]) => {
       if (!files || !files.length) {
@@ -58,30 +87,22 @@ export const useProcessFiles = (vipsInstance?: typeof vips) => {
         files.map((file) => {
           const id = v4();
           if (!vipsInstance) return;
-          setProcesses((p) => ({
-            ...p,
-            [id]: { id, file, loading: true },
-          }));
+
+          setIsLoading({ id, file });
 
           return processFile(file, vipsInstance)
             .then((result) => {
-              setProcesses((p) => ({
-                ...p,
-                [id]: { id, loading: false, data: result, file },
-              }));
+              setSuccess({ id, file, result });
             })
             .catch((error) => {
-              setProcesses((p) => ({
-                ...p,
-                [id]: { id, file, loading: false, error: error.message },
-              }));
+              setError({ id, file, error: error.message || error.toString() });
             });
         })
       ).then(() => {
         setProcessing(false);
       });
     },
-    [vipsInstance]
+    [setError, setIsLoading, setSuccess, vipsInstance]
   );
 
   return {
