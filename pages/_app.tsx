@@ -1,15 +1,17 @@
 import type { AppProps } from "next/app";
 import React from "react";
-import { ChakraProvider } from "@chakra-ui/react";
 import "../styles/globals.css";
+import { Chakra } from "../lib/Chakra";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider>
+    <Chakra cookies={pageProps.cookies}>
       <div style={{ minHeight: "100vh" }}>
         <Component {...pageProps} />
       </div>
-    </ChakraProvider>
+    </Chakra>
   );
 }
 export default MyApp;
+
+export { getServerSideProps } from "../lib/Chakra";

@@ -24,6 +24,7 @@ import { FileProcessResult } from "../lib/processFile";
 import Head from "next/head";
 import { BsCheckCircle } from "react-icons/bs";
 import { css } from "@emotion/react";
+import { ColorModePicker } from "../lib/ColorModePicker";
 
 export default function Home() {
   const { vipsInstance, loading } = useVips();
@@ -113,6 +114,9 @@ export default function Home() {
   return (
     <div>
       <Script src="/vips/vips.js" />
+
+      {/* Not persiting */}
+      {/*<ColorModePicker />*/}
 
       <Head>
         <title>Switchfile - offline image converter</title>
