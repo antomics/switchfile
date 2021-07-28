@@ -1,5 +1,5 @@
 import Script from "next/script";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -24,10 +24,9 @@ import { FileProcessResult } from "../lib/processFile";
 import Head from "next/head";
 import { BsCheckCircle } from "react-icons/bs";
 import { css } from "@emotion/react";
-import { ColorModePicker } from "../lib/ColorModePicker";
 
 export default function Home() {
-  const { vipsInstance, loading } = useVips();
+  const { vipsInstance, loading, errored } = useVips();
   const [format, setFormat] = useState("webp");
   const {
     processes,
@@ -65,7 +64,24 @@ export default function Home() {
       });
   };
 
-  if (loading) {
+  if (errored) {
+    content = (
+      <Container py={6}>
+        <Alert display="block" colorScheme="red" textAlign="center">
+          Error while loading app.
+          <br />
+          Most likely your browser doesn't support it.
+          <br />
+          Try using recent versions of Chrome, Firefox, Edge or Opera
+          <br />
+          <Text fontSize="sm" color="gray.400">
+            {" "}
+            p.s. no, Safari doesn't work :/
+          </Text>
+        </Alert>
+      </Container>
+    );
+  } else if (loading) {
     content = (
       <Flex minH="100vh" justifyContent="center" alignItems={"center"}>
         <Spinner />
