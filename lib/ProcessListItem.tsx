@@ -1,24 +1,34 @@
-import { Icon, ListItem, Spinner, Text } from "@chakra-ui/react";
-import { BsCheck, BsDownload } from "react-icons/bs";
+import {
+  Button,
+  ButtonGroup,
+  Icon,
+  IconButton,
+  ListItem,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
+import {
+  BsCheck,
+  BsDownload,
+  BsFileCheck,
+  BsFillTrashFill,
+} from "react-icons/bs";
 import React from "react";
-import { ProcessData } from "./useProcessFiles";
+import { ProcessModel } from "./useProcessFiles";
 
 function ProcessListItemText({
   item: { result, file },
 }: {
-  item: ProcessData;
+  item: ProcessModel;
 }) {
   if (result) {
     return (
-      <Text
-        as="a"
-        color="green.400"
-        _hover={{ color: "green.300" }}
-        href={result.href}
-        download={result.download}
-      >
-        {result.download}
-      </Text>
+      <div>
+        <Text fontSize="lg">{file.name}</Text>
+        <Text color="gray.500" fontSize="xs">
+          {result.download}
+        </Text>
+      </div>
     );
   } else {
     return <p>{file.name}</p>;
@@ -26,43 +36,72 @@ function ProcessListItemText({
 }
 
 function ProcessListItemIcons({
-  item: { result, file, loading, error },
+  item,
+  onDownloadClick,
+  onClearClick,
 }: {
-  item: ProcessData;
+  item: ProcessModel;
+  onClearClick: (item: ProcessModel) => any;
+  onDownloadClick: (item: ProcessModel) => any;
 }) {
+  const { result, file, loading, error, downloaded } = item;
   return (
-    <div>
+    <ButtonGroup>
       {loading && <Spinner />}{" "}
       {result && (
-        <>
-          <a href={result.href} download={result.download}>
-            <Icon marginRight={3} as={BsDownload} />
-          </a>
-          <Icon as={BsCheck} color="green.400" />
-        </>
+        <Button
+          colorScheme="green"
+          leftIcon={<Icon as={BsDownload} />}
+          as="a"
+          href={result.href}
+          download={result.download}
+          onClick={() => onDownloadClick(item)}
+        >
+          Download
+        </Button>
+      )}
+      {downloaded && (
+        <IconButton
+          aria-label={"Clear"}
+          icon={<Icon as={BsFillTrashFill} />}
+          onClick={() => onClearClick(item)}
+        />
       )}
       {error && (
         <Text fontSize="md" color="red.400">
           {error}
         </Text>
       )}
-    </div>
+    </ButtonGroup>
   );
 }
 
-export function ProcessListItem({ item }: { item: ProcessData }) {
+export function ProcessListItem({
+  item,
+  onDownloadClick,
+  onClearClick,
+}: {
+  onDownloadClick: (item: ProcessModel) => any;
+  onClearClick: (item: ProcessModel) => any;
+  item: ProcessModel;
+}) {
   return (
     <ListItem
       backgroundColor="gray.700"
-      p={2}
+      p={4}
       rounded={2}
-      m={2}
-      border="gray.600"
+      borderColor="gray.600"
+      borderWidth={1}
       display="flex"
+      alignItems="center"
       justifyContent="space-between"
     >
       <ProcessListItemText item={item} />
-      <ProcessListItemIcons item={item} />
+      <ProcessListItemIcons
+        onClearClick={onClearClick}
+        onDownloadClick={onDownloadClick}
+        item={item}
+      />
     </ListItem>
   );
 }

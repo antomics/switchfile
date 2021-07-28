@@ -18,7 +18,7 @@ export const ImageDropZone = ({
           border-radius: 2px;
           min-height: 150px;
           margin: 2rem;
-          min-width: 450px;
+          width: 100%;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -32,7 +32,7 @@ export const ImageDropZone = ({
     >
       <div {...getRootProps({ className: "dropzone" })}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
+        <p>Drag 'n' drop some images here, or click to select files</p>
       </div>
     </Flex>
   );

@@ -1,16 +1,23 @@
-import { ProcessData } from "./useProcessFiles";
+import { ProcessModel } from "./useProcessFiles";
 import { Container, UnorderedList } from "@chakra-ui/react";
 import React from "react";
 import { ProcessListItem } from "./ProcessListItem";
 
-export function ProcessList(props: { processData: ProcessData[] }) {
+export function ProcessList(props: {
+  processData: ProcessModel[];
+  onDownloadClick: (item: ProcessModel) => any;
+  onClearClick: (item: ProcessModel) => any;
+}) {
   return (
-    <Container>
-      <UnorderedList>
-        {props.processData.map((item) => (
-          <ProcessListItem key={item.id} item={item} />
-        ))}
-      </UnorderedList>
-    </Container>
+    <UnorderedList spacing={3} m={0}>
+      {props.processData.map((item) => (
+        <ProcessListItem
+          onClearClick={props.onClearClick}
+          onDownloadClick={props.onDownloadClick}
+          key={item.id}
+          item={item}
+        />
+      ))}
+    </UnorderedList>
   );
 }
