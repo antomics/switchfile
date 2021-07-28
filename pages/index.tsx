@@ -81,16 +81,10 @@ export default function Home() {
         </Alert>
       </Container>
     );
-  } else if (loading) {
-    content = (
-      <Flex minH="100vh" justifyContent="center" alignItems={"center"}>
-        <Spinner />
-      </Flex>
-    );
-  } else if (vipsInstance) {
+  } else if (vipsInstance || loading) {
     content = (
       <>
-        <ImageDropZone dropzone={dropzone} />
+        <ImageDropZone loading={loading} dropzone={dropzone} />
 
         <Container>
           <Grid
@@ -104,12 +98,17 @@ export default function Home() {
               <option value="png">PNG</option>
               <option value="webp">WebP</option>
             </Select>
-            <Button colorScheme="yellow" onClick={() => enqueueAll()}>
+            <Button
+              isLoading={loading}
+              colorScheme="yellow"
+              onClick={() => enqueueAll()}
+            >
               Convert
             </Button>
             <Button
               size="sm"
               disabled={
+                loading ||
                 !processes.length ||
                 processes.every((p) => p.enqueued || !p.result)
               }
