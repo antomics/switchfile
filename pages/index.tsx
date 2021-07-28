@@ -192,7 +192,7 @@ export default function Home() {
             What is switchfile?
           </Text>
           <Text textAlign="center" as={"p"} fontSize="md" mb={2}>
-            Switchfile is a image converting web application that processes
+            Switchfile is an image converting web application that processes
             files in your browser only. It doesn't use any servers. This has the
             benefits of:
           </Text>
@@ -243,6 +243,18 @@ export default function Home() {
             <Text as="strong" pl={1}>
               WEBP, JPG and PNG
             </Text>
+          </Text>
+
+          <Text
+            mt={8}
+            textAlign="center"
+            as={"p"}
+            fontSize="sm"
+            color="gray.400"
+            mb={2}
+          >
+            Made by <a href="mailto:antonmmihaylov@gmail.com">Anton Mihaylov</a>{" "}
+            🇧🇬
           </Text>
         </Container>
       )}
