@@ -4,12 +4,10 @@ import {
   Alert,
   Button,
   Container,
-  Flex,
   Grid,
   ListIcon,
   ListItem,
   Select,
-  Spinner,
   Text,
   UnorderedList,
 } from "@chakra-ui/react";
@@ -128,6 +126,21 @@ export default function Home() {
 
   return (
     <div>
+      <Script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-RBFNVCP4R5"
+      />
+      <Script
+        dangerouslySetInnerHTML={{
+          __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-RBFNVCP4R5', { 'anonymize_ip': true });
+      `,
+        }}
+      />
       <Script src="/vips/vips.js" />
 
       {/* Not persiting */}
